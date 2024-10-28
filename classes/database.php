@@ -6,19 +6,26 @@ class Database{
     private $host = 'localhost';      // The hostname of the database server.
     private $username = 'root';       // The username used to connect to the database.
     private $password = '';           // The password used to connect to the database (empty string means no password).
-    private $dbname = 'sample_db';// The name of the database to connect to.
+    private $dbname = 'sample_db';  // Make sure this matches your database name
 
     protected $connection; // This property will hold the PDO connection object once connected.
 
     // The connect() method is used to establish a connection to the database.
     function connect(){
-        // Check if a connection has already been established. If not, create a new one.
         if($this->connection === null){
-            // Create a new PDO instance with the provided database details.
-            $this->connection = new PDO("mysql:host=$this->host;dbname=$this->dbname", $this->username, $this->password);
+            try {
+                $this->connection = new PDO(
+                    "mysql:host=$this->host;dbname=$this->dbname", 
+                    $this->username, 
+                    $this->password
+                );
+                $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                error_log("Database connected successfully");
+            } catch(PDOException $e) {
+                error_log("Connection failed: " . $e->getMessage());
+                die("Connection failed: " . $e->getMessage());
+            }
         }
-
-        // Return the established connection.
         return $this->connection;
     }
 }

@@ -20,7 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Database: `sample_db`
 --
-CREATE DATABASE IF NOT EXISTS `sample_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+CREATE DATABASE IF NOT EXISTS `sample_db`;
 USE `sample_db`;
 
 -- --------------------------------------------------------
@@ -29,11 +29,11 @@ USE `sample_db`;
 -- Table structure for table `account`
 --
 
-CREATE TABLE `account` (
-  `id` int(11) NOT NULL,
-  `first_name` varchar(255) NOT NULL,
-  `last_name` varchar(255) NOT NULL,
-  `username` varchar(255) NOT NULL,
+CREATE TABLE IF NOT EXISTS `account` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `username` varchar(50) UNIQUE NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` varchar(100) NOT NULL,
   `is_staff` tinyint(4) NOT NULL DEFAULT 1,
@@ -45,8 +45,7 @@ CREATE TABLE `account` (
 --
 
 INSERT INTO `account` (`id`, `first_name`, `last_name`, `username`, `password`, `role`, `is_staff`, `is_admin`) VALUES
-(2, 'Admin', 'Admin', 'admin', '$2y$10$kIsio70mGMOC52N1kGgSC.4ESyfmdXPojSnxP.8IDnB8c1Z4brw7G', 'admin', 1, 1),
-(3, 'Staff', '01', 'staff', '$2y$10$105HdzfebWx8R8q8x2WvZeZlfF6ASKNH2zKFGhh2mpaWvFjYxKdte', 'staff', 1, 0);
+(2, 'Admin', 'User', 'admin', '$2y$10$kIsio70mGMOC52N1kGgSC.4ESyfmdXPojSnxP.8IDnB8c1Z4brw7G', 'admin', 1, 1);
 
 -- --------------------------------------------------------
 

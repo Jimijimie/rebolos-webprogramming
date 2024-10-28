@@ -1,4 +1,3 @@
-
 <div class="sidebar flex-column flex-shrink-0">
     <a href="/" class="logo">
         <img class="img-fluid" src="../img/logo1.png" alt="" srcset="">
@@ -38,10 +37,27 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link">
+            <button class="nav-link w-100 d-flex align-items-center" data-bs-toggle="collapse" data-bs-target="#accounts-collapse" aria-expanded="false">
                 <i class="bi bi-people"></i>
                 <span class="fs-6 ms-2">Accounts</span>
-            </a>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </button>
+            <div class="collapse" id="accounts-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 ms-4">
+                    <li><a href="users" class="nav-link">
+                        <i class="bi bi-person"></i>
+                        <span class="fs-6 ms-2">Users</span>
+                    </a></li>
+                    <li><a href="roles" class="nav-link">
+                        <i class="bi bi-shield-lock"></i>
+                        <span class="fs-6 ms-2">Roles</span>
+                    </a></li>
+                    <li><a href="permissions" class="nav-link">
+                        <i class="bi bi-key"></i>
+                        <span class="fs-6 ms-2">Permissions</span>
+                    </a></li>
+                </ul>
+            </div>
         </li>
     </ul>
 </div>

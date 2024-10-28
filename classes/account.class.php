@@ -54,35 +54,53 @@ class Account{
     }
 
     function login($username, $password){
-        $sql = "SELECT * FROM account WHERE username = :username LIMIT 1;";
-        $query = $this->db->connect()->prepare($sql);
-
-        $query->bindParam('username', $username);
-
-        if($query->execute()){
-            $data = $query->fetch();
-            if($data && password_verify($password, $data['password'])){
-                return true;
+        try {
+            $sql = "SELECT * FROM account WHERE username = :username LIMIT 1";
+            $query = $this->db->connect()->prepare($sql);
+            $query->bindParam(':username', $username);
+            $query->execute();
+            
+            $user = $query->fetch(PDO::FETCH_ASSOC);
+            if($user) {
+                error_log("Found user: " . print_r($user, true));
+                if(password_verify($password, $user['password'])){
+                    error_log("Password verified successfully");
+                    return true;
+                }
+                error_log("Password verification failed");
             }
+            error_log("No user found with username: " . $username);
+            return false;
+        } catch(PDOException $e) {
+            error_log("Login error: " . $e->getMessage());
+            return false;
         }
-
-        return false;
     }
 
     function fetch($username){
-        $sql = "SELECT * FROM account WHERE username = :username LIMIT 1;";
+        $sql = "SELECT * FROM account WHERE username = :username LIMIT 1";
         $query = $this->db->connect()->prepare($sql);
+        $query->bindParam(':username', $username);
+        $query->execute();
+        return $query->fetch(PDO::FETCH_ASSOC);
+    }
 
-        $query->bindParam('username', $username);
-        $data = null;
-        if($query->execute()){
-            $data = $query->fetch();
-        }
+    function getAll(){
+        $sql = "SELECT * FROM account ORDER BY id DESC";
+        $query = $this->db->connect()->prepare($sql);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
 
-        return $data;
+    function delete($id){
+        $sql = "DELETE FROM account WHERE id = :id";
+        $query = $this->db->connect()->prepare($sql);
+        $query->bindParam(':id', $id);
+        return $query->execute();
     }
 }
 
 // $obj = new Account();
 
 // $obj->add();
+
