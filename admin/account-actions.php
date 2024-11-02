@@ -34,6 +34,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $accounts = $account->getAll();
-    echo json_encode(['data' => $accounts]);
+    try {
+        $accounts = $account->getAll();
+        if (empty($accounts)) {
+            error_log("No accounts found or error fetching accounts");
+        }
+        echo json_encode(['data' => $accounts]);
+    } catch(Exception $e) {
+        error_log("Error in account-actions.php: " . $e->getMessage());
+        echo json_encode(['data' => [], 'error' => $e->getMessage()]);
+    }
 }

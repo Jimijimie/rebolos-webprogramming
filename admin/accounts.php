@@ -18,27 +18,41 @@
         
         <div class="content-page">
             <div class="container-fluid">
+                <!-- Page Title -->
                 <div class="row">
                     <div class="col-12">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h4 class="card-title">Accounts Management</h4>
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAccountModal">
+                        <div class="page-title-box">
+                            <div class="page-title-right d-flex align-items-center">
+                                <button class="btn btn-primary brand-bg-color" data-bs-toggle="modal" data-bs-target="#addAccountModal">
                                     Add New Account
                                 </button>
                             </div>
+                            <h4 class="page-title">Accounts Management</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accounts Table -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
                             <div class="card-body">
-                                <table id="accountsTable" class="table table-striped table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Username</th>
-                                            <th>Role</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                </table>
+                                <div class="table-responsive">
+                                    <table id="accountsTable" class="table table-centered table-nowrap mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="text-start">ID</th>
+                                                <th>Name</th>
+                                                <th>Username</th>
+                                                <th>Role</th>
+                                                <th class="text-center">Staff</th>
+                                                <th class="text-center">Admin</th>
+                                                <th class="text-center">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -94,28 +108,60 @@
 
     <script>
         $(document).ready(function() {
-            const table = $('#accountsTable').DataTable({
-                ajax: 'account-actions.php',
+            const accountsTable = $('#accountsTable').DataTable({
+                ajax: {
+                    url: 'account-actions.php',
+                    type: 'GET',
+                    error: function(xhr, error, thrown) {
+                        console.error('DataTables error:', error);
+                        console.error('Server response:', xhr.responseText);
+                    }
+                },
                 columns: [
-                    { data: 'id' },
+                    { data: 'id', className: 'text-start' },
                     { 
                         data: null,
                         render: function(data) {
-                            return data.first_name + ' ' + data.last_name;
+                            return `${data.first_name} ${data.last_name}`;
                         }
                     },
                     { data: 'username' },
                     { data: 'role' },
+                    { 
+                        data: 'is_staff', 
+                        className: 'text-center',
+                        render: data => `<span class="badge ${data ? 'bg-success' : 'bg-secondary'}">${data ? 'Yes' : 'No'}</span>`
+                    },
+                    { 
+                        data: 'is_admin', 
+                        className: 'text-center',
+                        render: data => `<span class="badge ${data ? 'bg-primary' : 'bg-secondary'}">${data ? 'Yes' : 'No'}</span>`
+                    },
                     {
                         data: null,
+                        className: 'text-center',
                         render: function(data) {
                             return `
-                                <button class="btn btn-sm btn-info" onclick="editAccount(${data.id})">Edit</button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteAccount(${data.id})">Delete</button>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-info edit-btn" data-id="${data.id}">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger delete-btn" data-id="${data.id}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
                             `;
                         }
                     }
-                ]
+                ],
+                responsive: true,
+                dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
+                language: {
+                    search: "",
+                    searchPlaceholder: "Search accounts..."
+                },
+                pageLength: 10,
+                ordering: false
             });
 
             $('#addAccountForm').on('submit', function(e) {
@@ -133,7 +179,7 @@
                         const result = JSON.parse(response);
                         if(result.success) {
                             $('#addAccountModal').modal('hide');
-                            table.ajax.reload();
+                            accountsTable.ajax.reload();
                             alert('Account added successfully!');
                         } else {
                             alert('Failed to add account');

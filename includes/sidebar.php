@@ -44,11 +44,11 @@
             </button>
             <div class="collapse" id="accounts-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 ms-4">
-                    <li><a href="users" class="nav-link">
+                    <li><a href="users.php" class="nav-link">
                         <i class="bi bi-person"></i>
                         <span class="fs-6 ms-2">Users</span>
                     </a></li>
-                    <li><a href="roles" class="nav-link">
+                    <li><a href="roles.php" class="nav-link">
                         <i class="bi bi-shield-lock"></i>
                         <span class="fs-6 ms-2">Roles</span>
                     </a></li>

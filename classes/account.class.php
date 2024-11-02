@@ -20,19 +20,24 @@ class Account{
     }
 
     function add(){
-        $sql = "INSERT INTO account (first_name, last_name, username, password, role, is_staff, is_admin) VALUES (:first_name, :last_name, :username, :password, :role, :is_staff, :is_admin);";
-        $query = $this->db->connect()->prepare($sql);
+        try {
+            $sql = "INSERT INTO account (first_name, last_name, username, password, role, is_staff, is_admin) VALUES (:first_name, :last_name, :username, :password, :role, :is_staff, :is_admin);";
+            $query = $this->db->connect()->prepare($sql);
 
-        $query->bindParam(':first_name', $this->first_name);
-        $query->bindParam(':last_name', $this->last_name);
-        $query->bindParam(':username', $this->username);
-        $hashpassword = password_hash($this->password, PASSWORD_DEFAULT);
-        $query->bindParam(':password', $hashpassword);
-        $query->bindParam(':role', $this->role);
-        $query->bindParam(':is_staff', $this->is_staff);
-        $query->bindParam(':is_admin', $this->is_admin);
+            $query->bindParam(':first_name', $this->first_name);
+            $query->bindParam(':last_name', $this->last_name);
+            $query->bindParam(':username', $this->username);
+            $hashpassword = password_hash($this->password, PASSWORD_DEFAULT);
+            $query->bindParam(':password', $hashpassword);
+            $query->bindParam(':role', $this->role);
+            $query->bindParam(':is_staff', $this->is_staff);
+            $query->bindParam(':is_admin', $this->is_admin);
 
-        return $query->execute();
+            return $query->execute();
+        } catch(PDOException $e) {
+            error_log("Error adding account: " . $e->getMessage());
+            return false;
+        }
     }
 
     function usernameExist($username, $excludeID){
@@ -86,10 +91,15 @@ class Account{
     }
 
     function getAll(){
-        $sql = "SELECT * FROM account ORDER BY id DESC";
-        $query = $this->db->connect()->prepare($sql);
-        $query->execute();
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $sql = "SELECT * FROM account ORDER BY id DESC";
+            $query = $this->db->connect()->prepare($sql);
+            $query->execute();
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch(PDOException $e) {
+            error_log("Error fetching accounts: " . $e->getMessage());
+            return [];
+        }
     }
 
     function delete($id){
